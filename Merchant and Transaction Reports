@@ -5,7 +5,9 @@
  * Author: Sheriff Adeiza Jimoh
  * Date: September 2024 
 */
+
 -- Query: Fetch all Merchants Details on InsatantPay & VirtualPay Gateway.
+
 SELECT r.Merchant_ID AS 'Merchant ID',
        r.MerchantName AS 'Merchant Name',
        r.AccountNumber AS 'Account Number',
@@ -18,5 +20,21 @@ LEFT JOIN Transactions_Table t ON r.AccountNumber = t.SourceAccount
 WHERE t.Gateway IN ('InstantPay', 'VirtualPay') 
   AND r.Merchant_Name != 'null'
 GROUP BY r.MerchantNumber, r.MerchantName, r.AccountNumber, t.Gateway, 
+         CAST(CONVERT(DateTime, r.CreatedAt) AS Date)
+ORDER BY r.MerchantName ASC;
+
+-- Query: Fetch all merchants using specific POS terminals
+
+SELECT r.MerchantNumber AS 'Merchant ID',
+       r.MerchantName AS 'Merchant Name',
+       r.AccountNumber AS 'Account Numbe',
+       t.Gateway AS 'Gateway',
+       CAST(CONVERT(DateTime, r.CreatedAt) AS Date) AS 'Transaction Date',
+       SUM(t.transaction_amount) AS 'Transaction Value',
+       COUNT(t.transaction_id) AS 'Transaction Count'
+FROM Registrations_Table r
+LEFT JOIN  Transactions_Table t ON r.MerchantName = t.beneficiary_name
+WHERE r.MerchantName != 'null'
+GROUP BY r.MerchantNumber, r.MerchantName, r.AccountNumber, 
          CAST(CONVERT(DateTime, r.CreatedAt) AS Date)
 ORDER BY r.MerchantName ASC;

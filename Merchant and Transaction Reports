@@ -1,0 +1,7 @@
+/*
+ * Project: Merchant and Transaction Reports
+ * Description: SQL script for querying merchant data, POS transactions, failed transactions, 
+ *              and payment gateway activities.
+ * Author: [Your Name]
+ * Date: [Date]
+ */

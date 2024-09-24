@@ -3,5 +3,20 @@
  * Description: SQL script for querying merchant data, POS transactions, failed transactions, 
  *              and payment gateway activities.
  * Author: Sheriff Adeiza Jimoh
- * Date: September 2024
- */
+ * Date: September 2024 
+*/
+-- Query: Fetch all Merchants Details on InsatantPay & VirtualPay Gateway.
+SELECT r.Merchant_ID AS 'Merchant ID',
+       r.MerchantName AS 'Merchant Name',
+       r.AccountNumber AS 'Account Number',
+       t.Gateway AS 'Gateway',
+       CAST(CONVERT(DateTime, r.Date) AS Date),
+       SUM(t.Transaction_Amount) AS 'Transaction Value',
+       COUNT(t.Transaction_Id) AS 'Transaction Count'
+FROM Registrations_Table r
+LEFT JOIN Transactions_Table t ON r.AccountNumber = t.SourceAccount 
+WHERE t.Gateway IN ('InstantPay', 'VirtualPay') 
+  AND r.Merchant_Name != 'null'
+GROUP BY r.MerchantNumber, r.MerchantName, r.AccountNumber, t.Gateway, 
+         CAST(CONVERT(DateTime, r.CreatedAt) AS Date)
+ORDER BY r.MerchantName ASC;
